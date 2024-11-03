@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Untitled</title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10xBuild Coder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1f1f2e;
+            color: #d1d1d6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        h1 {
+            font-weight: 500;
+            font-size: 2em;
+            color: #00d4ff;
+            text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        .editor-container {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            max-width: 1200px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-radius: 8px;
+            background-color: #2a2a3b;
+            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            min-width: 280px;
+        }
+        .input-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        .input-header img {
+            width: 24px;
+            height: 24px;
+        }
+        label {
+            font-weight: 500;
+            font-size: 1.1em;
+            color: #ffffff;
+        }
+        textarea {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: none;
+            border-radius: 5px;
+            background-color: #2a2a3b;
+            color: #d1d1d6;
+            transition: all 0.3s ease;
+            width: 100%;
+            min-height: 250px;
+            max-height: 300px;
+            white-space: pre; /* Prevent wrapping in the textarea */
+        }
+        textarea:focus {
+            outline: none;
+            background-color: #3b3b4f;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+        }
+        /* Preview Styles */
+        .preview-container {
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 20px;
+        }
+        .preview-header {
+            font-weight: 500;
+            font-size: 1.2em;
+            color: #00d4ff;
+            margin-bottom: 5px;
+            text-shadow: 0 0 5px rgba(0, 212, 255, 0.5);
+        }
+        #preview {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #00d4ff;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.7);
+            overflow: auto;
+            background-color: #ffffff;
+        }
+        .export-button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: #ffffff;
+            background-color: #00d4ff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .export-button:hover {
+            background-color: #00b2cc;
+        }
+        /* Social Links */
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .social-links a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-size: 1.5em;
+        }
+        .social-links img {
+            width: 30px;
+            height: 30px;
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .editor-container {
+                flex-direction: column;
+            }
+            textarea {
+                min-height: 150px;
+                max-height: 200px;
+            }
+            #preview {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>10xBuild Coder</h1>
+
+    <div class="editor-container">
+        <div class="input-group">
+            <div class="input-header">
+                <img src="https://img.icons8.com/color/48/000000/html-5.png" alt="HTML Logo">
+                <label for="htmlEditor">HTML</label>
+            </div>
+            <textarea id="htmlEditor" placeholder="Write HTML code here..." oninput="updatePreview()"></textarea>
+        </div>
+        <div class="input-group">
+            <div class="input-header">
+                <img src="https://img.icons8.com/color/48/000000/css3.png" alt="CSS Logo">
+                <label for="cssEditor">CSS</label>
+            </div>
+            <textarea id="cssEditor" placeholder="Write CSS code here..." oninput="updatePreview()"></textarea>
+        </div>
+        <div class="input-group">
+            <div class="input-header">
+                <img src="https://img.icons8.com/color/48/000000/javascript.png" alt="JavaScript Logo">
+                <label for="jsEditor">JavaScript</label>
+            </div>
+            <textarea id="jsEditor" placeholder="Write JavaScript code here..." oninput="updatePreview()"></textarea>
+        </div>
+    </div>
+
+    <div class="preview-container">
+        <div class="preview-header">Preview</div>
+        <iframe id="preview"></iframe>
+    </div>
+
+    <button class="export-button" onclick="exportCode()">Export as ZIP</button>
+
+    <div class="social-links">
+        <a href="https://twitter.com/Rajasf2r" target="_blank">
+            <img src="https://img.icons8.com/color/48/000000/twitter.png" alt="Twitter"> Rajasf2r
+        </a>
+        <a href="https://github.com/Rajasfr" target="_blank">
+            <img src="https://img.icons8.com/ios-glyphs/48/ffffff/github.png" alt="GitHub"> Rajasfr
+        </a>
+    </div>
+
+    <script>
+        const htmlEditor = document.getElementById('htmlEditor');
+        const cssEditor = document.getElementById('cssEditor');
+        const jsEditor = document.getElementById('jsEditor');
+        const preview = document.getElementById('preview');
+
+        function updatePreview() {
+            const htmlContent = htmlEditor.value;
+            const cssContent = `<style>${cssEditor.value}</style>`;
+            const jsContent = `<script>${jsEditor.value}<\/script>`;
+
+            // Ensure preview is updated safely
+            try {
+                preview.contentDocument.open();
+                preview.contentDocument.write(`
+                    <html>
+                        <head>
+                            ${cssContent}
+                        </head>
+                        <body>
+                            ${htmlContent}
+                            ${jsContent}
+                        </body>
+                    </html>
+                `);
+                preview.contentDocument.close();
+            } catch (error) {
+                console.error("Error updating preview:", error);
+            }
+        }
+
+        function exportCode() {
+            const zip = new JSZip();
+            zip.file("index.html", htmlEditor.value);
+            zip.file("style.css", cssEditor.value);
+            zip.file("script.js", jsEditor.value);
+
+            zip.generateAsync({ type: "blob" })
+                .then(blob => {
+                    saveAs(blob, "project.zip");
+                })
+                .catch(error => {
+                    console.error("Error generating ZIP file:", error);
+                });
+        }
+    </script>
+
+</body>
+</html>
+<!-- partial -->
+  
+</body>
+</html>
